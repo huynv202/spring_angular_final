@@ -11,6 +11,7 @@ import { RoleService } from './service/role.service';
 })
 export class AppComponent {
   @Input() nameNQ!: string;
+  @Input() checkBox!: boolean;
   constructor(
     private nhomquyenService: NhomquyenService,
     private nhomquyenmenuService: NhomquyenmenuService,
@@ -22,17 +23,29 @@ export class AppComponent {
   listNQ1: any;
   listRole: any;
   ngOnInit() {
+    this.getAllNhomQuyen();
+    this.getAllNhomQuyenMN();
+    this.getAllRole();
+    this.getNhomQuyenMenu1(1);
+  }
+  getAllNhomQuyen() {
     this.nhomquyenService.getNhomQuyen().subscribe((data) => {
       this.listNQ = data;
       console.log(this.listNQ);
     });
-    this.nhomquyenmenuService.getNhomQuyenMenu().subscribe((data) => {
-      this.listNQMenu = data;
-      console.log(this.listNQMenu);
-    });
+  }
+
+  getAllRole() {
     this.roleService.getRole().subscribe((data) => {
       this.listRole = data;
       console.log(this.listRole);
+    });
+  }
+
+  getAllNhomQuyenMN() {
+    this.nhomquyenmenuService.getNhomQuyenMenu().subscribe((data) => {
+      this.listNQMenu = data;
+      console.log(this.listNQMenu);
     });
   }
 
@@ -51,17 +64,31 @@ export class AppComponent {
     });
   }
 
-  id: any;
-  getCheck(value: any) {
-    this.listDS = [value];
-    console.log('list Q', this.listDS);
+  getCheck(value: any, ck: boolean) {
+    if (ck == true) {
+      const uni = new Set(this.listDS);
+      this.listDS = [...new Set([...uni, ...this.listDS.concat(value)])];
+      console.log('list Q', this.listDS);
+    } else {
+      //remove element from listDS when ck = false
+      this.listDS = this.listDS.filter((item: any) => item.id !== value.id);
+      console.log(
+        'list fil',
+        this.listDS.filter((item: any) => item.id !== value.id)
+      );
+      console.log('list Q', this.listDS);
+    }
     console.log(value);
   }
+
   listDS1: any;
   listDS: Array<any> = [];
   @Input() showRole!: string;
+
   getRoles123(value: any) {
     this.listDS1 = value;
+    this.listDS = value.role_id;
+    console.log('listDS', this.listDS);
     console.log(this.listDS1);
     console.log(value);
   }
@@ -96,16 +123,20 @@ export class AppComponent {
     console.log('data :', data);
     this.nhomquyenmenuService.updateNhomQuyenMenu(data).subscribe((resp) => {
       console.log(resp);
+      this.getNhomQuyenMenu1(data.nhom_quyen.id);
     });
-    this.ngOnInit();
   }
 
-  equal(list: any, name: string) {
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].name == name) {
+  equal(list: any, id: number) {
+    for (let i = 0; i < list?.length; i++) {
+      if (list[i].id == id) {
         return true;
       }
     }
     return false;
+  }
+
+  reset(ck: boolean) {
+    ck = false;
   }
 }

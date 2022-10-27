@@ -42,7 +42,7 @@
                 </svg></i> Thêm</a></td>
           <td class="">
             <p [hidden]="!check">
-              <li *ngFor="let quyen of b.role_id">
+              <li *ngFor="let quyen of b.role_id ">
                 {{quyen.name}}
               </li>
             </p>
@@ -76,21 +76,19 @@
           </thead>
           <tbody>
             <tr *ngFor="let a of listRole">
-              <th> <input class="form-check-input" type="checkbox" (click)="getCheck(a)" id="{{a.id}}"
-                  [checked]="equal(listDS1.role_id, a.name)" *ngIf="equal(listDS1.role_id, a.name) == true"
-                  [value]="a.name">
-                <input class="form-check-input" type="checkbox" (click)="getCheck(a)" id="{{a.id}}" [checked]="false"
-                  *ngIf="equal(listDS1.role_id, a.name) == false" [value]="a.name">
+              <th> <input class="form-check-input" type="checkbox" (click)="getCheck(a,false)" id="{{a.id}}"
+                  [checked]="!checkBox" *ngIf="equal(listDS, a.id) == true" [value]="a.name">
+                <input class="form-check-input" type="checkbox" (click)="getCheck(a,true)" id="{{a.id}}"
+                  [checked]="checkBox" *ngIf="equal(listDS, a.id) == false" [value]="a.name">
               </th>
-
               <td id="{{a.id}}">{{a.name}}</td>
-
             </tr>
           </tbody>
         </table>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" (click)="updateRole(listNQ1)">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+            (click)="reset(checkBox)">Close</button>
+          <button type="button" class="btn btn-primary" (click)="updateRole(listDS)">Save changes</button>
         </div>
       </div>
     </div>
